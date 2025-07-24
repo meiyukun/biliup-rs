@@ -87,6 +87,10 @@ pub enum Commands {
         #[arg(long, default_value = "3")]
         retry: u32,
 
+        /// 指定追加位置，0表示最前面，默认追加到最后
+        #[arg(long, default_value_t = usize::MAX)]
+        index: usize,
+
         #[command(flatten)]
         studio: Studio,
     },

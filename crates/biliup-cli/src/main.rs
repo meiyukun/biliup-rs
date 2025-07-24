@@ -80,6 +80,7 @@ async fn main() -> Result<()> {
             line,
             limit,
             retry,
+            index,
             studio: _,
         } => {
             append(
@@ -89,6 +90,7 @@ async fn main() -> Result<()> {
                 line,
                 limit,
                 retry,
+                index,
                 cli.proxy.as_deref(),
             )
             .await?

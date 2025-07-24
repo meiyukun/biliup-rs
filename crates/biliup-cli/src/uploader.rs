@@ -142,12 +142,22 @@ pub async fn append(
     line: Option<UploadLine>,
     limit: usize,
     retry: u32,
+    index: usize, // 新增index参数
     proxy: Option<&str>,
 ) -> Result<()> {
     let bilibili = login_by_cookies(user_cookie, proxy).await?;
-    let mut uploaded_videos = upload(&video_path, &bilibili, line, limit, retry).await?;
+    let uploaded_videos = upload(&video_path, &bilibili, line, limit, retry).await?;
     let mut studio = bilibili.studio_data(&vid, proxy).await?;
-    studio.videos.append(&mut uploaded_videos);
+
+    // 确定插入位置
+    let insert_pos = if index > studio.videos.len() {
+        // 如果指定的索引大于现有视频数量，就放到最后
+        studio.videos.len()
+    } else {
+        index
+    };
+    // 在指定位置插入新视频
+    studio.videos.splice(insert_pos..insert_pos, uploaded_videos);
     bilibili.edit_by_web(&studio).await?;
     // studio.edit(&login_info).await?;
     Ok(())
